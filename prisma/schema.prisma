@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships  TeamMember[]
+  comments     Comment[]
+  availability Availability[]
+}
+
+model Team {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  inviteCode  String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members TeamMember[]
+  matches Match[]
+  venues  Venue[]
+  players Player[]
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+  userId   String
+  teamId   String
+  role     String   @default("MEMBER")
+  joinedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  player Player?
+
+  @@unique([userId, teamId])
+}
+
+model Player {
+  id           String @id @default(cuid())
+  teamId       String
+  teamMemberId String @unique
+  displayName  String
+  avatar       String?
+  skillLevel   String @default("INTERMEDIATE")
+  createdAt    DateTime @default(now())
+
+  team         Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamMember   TeamMember    @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  matchPlayers MatchPlayer[]
+  availability Availability[]
+}
+
+model Venue {
+  id        String   @id @default(cuid())
+  teamId    String
+  name      String
+  address   String?
+  courts    Int      @default(1)
+  notes     String?
+  createdAt DateTime @default(now())
+
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  matches Match[]
+}
+
+model Match {
+  id          String   @id @default(cuid())
+  teamId      String
+  venueId     String?
+  type        String   @default("SINGLES")
+  status      String   @default("SCHEDULED")
+  scheduledAt DateTime
+  notes       String?
+  winningSide Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team     Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  venue    Venue?        @relation(fields: [venueId], references: [id])
+  players  MatchPlayer[]
+  sets     Set[]
+  comments Comment[]
+}
+
+model MatchPlayer {
+  id       String @id @default(cuid())
+  matchId  String
+  playerId String
+  side     Int
+  position Int    @default(1)
+
+  match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, playerId])
+}
+
+model Set {
+  id          String    @id @default(cuid())
+  matchId     String
+  setNumber   Int
+  side1Score  Int       @default(0)
+  side2Score  Int       @default(0)
+  isComplete  Boolean   @default(false)
+  winningSide Int?
+  completedAt DateTime?
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, setNumber])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  matchId   String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Availability {
+  id        String   @id @default(cuid())
+  playerId  String
+  userId    String
+  date      DateTime
+  status    String   @default("AVAILABLE")
+  notes     String?
+  createdAt DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, date])
+}
