@@ -5,6 +5,10 @@ const nextConfig = {
   },
   experimental: {
     serverComponentsExternalPackages: ["@prisma/client", "bcryptjs"],
+    outputFileTracingIncludes: {
+      "/*": ["./prisma/**/*"],
+      "/api/**/*": ["./prisma/**/*"]
+    },
   },
   images: {
     remotePatterns: [
