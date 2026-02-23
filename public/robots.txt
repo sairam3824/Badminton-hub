@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /matches
+Disallow: /players
+Disallow: /stats
+Disallow: /venues
+Disallow: /teams
+Disallow: /settings
+Disallow: /onboarding
+
+# Allow public pages
+Allow: /
+Allow: /login
+Allow: /register
+
+Sitemap: /sitemap.xml
