@@ -2,6 +2,8 @@
 
 A complete, production-ready web application for managing badminton matches across multiple teams.
 
+**🌟 Live Demo:** [https://badminton.saiii.in](https://badminton.saiii.in)
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
@@ -80,7 +82,7 @@ npm run db:push    # Create tables (empty)
 npm run dev        # Start the dev server
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and register a new account.
+Open [http://localhost:3001](http://localhost:3001) and register a new account.
 
 No demo banner. No pre-filled credentials. Clean slate.
 
@@ -88,7 +90,7 @@ No demo banner. No pre-filled credentials. Clean slate.
 
 ### Option B — Demo Project (Pre-loaded Data)
 
-Loads 6 demo accounts, a team, venues, matches, and comments. Shows a **Demo banner** across the top of every page and pre-fills demo credentials on the login screen.
+Loads demo accounts, a team, venues, matches, and comments. Shows a **Demo banner** across the top of every page and pre-fills demo credentials on the login screen.
 
 ```bash
 npm run db:push        # Create tables
@@ -96,18 +98,14 @@ npm run db:seed:demo   # Load demo accounts + sample data
 npm run dev:demo       # Start dev server in demo mode
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The login page will show clickable demo accounts:
+Open [http://localhost:3001](http://localhost:3001). The login page will show clickable demo accounts:
 
 | Email                   | Password    | Role       |
 |-------------------------|-------------|------------|
 | alice@example.com       | password123 | Team Admin |
 | bob@example.com         | password123 | Member     |
-| charlie@example.com     | password123 | Member     |
-| diana@example.com       | password123 | Member     |
-| evan@example.com        | password123 | Member     |
-| frank@example.com       | password123 | Member     |
 
-**Team invite code**: `DEMO-TEAM-001`
+**Team invite code**: `DEMO123`
 
 > `npm run dev:demo` sets `NEXT_PUBLIC_DEMO_MODE=true` which enables the banner and demo credentials UI. The demo seed script lives in `demo/seed.ts`.
 
