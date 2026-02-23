@@ -10,7 +10,7 @@ const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
 const DEMO_ACCOUNTS = [
   { email: "alice@example.com", label: "Admin" },
-  { email: "bob@example.com",   label: "Member" },
+  { email: "bob@example.com", label: "Member" },
 ];
 
 function LoginForm() {
@@ -118,7 +118,7 @@ function LoginForm() {
 
         {isDemoMode && (
           <div className="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-200">
-            <p className="text-xs font-semibold text-amber-800 mb-2 uppercase tracking-wide">Demo accounts — password: password123</p>
+            <p className="text-xs font-semibold text-amber-800 mb-2 tracking-wide">Demo accounts — password: password123</p>
             <div className="flex flex-col gap-1">
               {DEMO_ACCOUNTS.map((account) => (
                 <button
