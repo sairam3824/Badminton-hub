@@ -41,7 +41,7 @@ async function main() {
     });
 
     // Add members to team
-    await prisma.teamMember.upsert({
+    const adminMember = await prisma.teamMember.upsert({
         where: {
             userId_teamId: {
                 userId: admin.id,
@@ -56,7 +56,7 @@ async function main() {
         },
     });
 
-    await prisma.teamMember.upsert({
+    const bobMember = await prisma.teamMember.upsert({
         where: {
             userId_teamId: {
                 userId: member.id,
@@ -71,7 +71,116 @@ async function main() {
         },
     });
 
-    console.log("Demo seed data loaded successfully.");
+    // Create Players
+    const alicePlayer = await prisma.player.upsert({
+        where: { teamMemberId: adminMember.id },
+        update: {},
+        create: {
+            teamId: team.id,
+            teamMemberId: adminMember.id,
+            displayName: "Alice (Admin)",
+            skillLevel: "ADVANCED"
+        }
+    });
+
+    const bobPlayer = await prisma.player.upsert({
+        where: { teamMemberId: bobMember.id },
+        update: {},
+        create: {
+            teamId: team.id,
+            teamMemberId: bobMember.id,
+            displayName: "Bob (Member)",
+            skillLevel: "INTERMEDIATE"
+        }
+    });
+
+    // Create a Venue
+    const venue = await prisma.venue.create({
+        data: {
+            teamId: team.id,
+            name: "Downtown Sports Center",
+            address: "123 Main St, Cityville",
+            courts: 4,
+            notes: "Wooden floors, good lighting."
+        }
+    });
+
+    // Create Matches
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 2);
+
+    // Upcoming Match
+    const match1 = await prisma.match.create({
+        data: {
+            teamId: team.id,
+            venueId: venue.id,
+            type: "SINGLES",
+            status: "SCHEDULED",
+            scheduledAt: tomorrow,
+            notes: "Friendly weekend match"
+        }
+    });
+
+    await prisma.matchPlayer.create({
+        data: {
+            matchId: match1.id,
+            playerId: alicePlayer.id,
+            side: 1
+        }
+    });
+
+    await prisma.matchPlayer.create({
+        data: {
+            matchId: match1.id,
+            playerId: bobPlayer.id,
+            side: 2
+        }
+    });
+
+    // Completed Match
+    const match2 = await prisma.match.create({
+        data: {
+            teamId: team.id,
+            venueId: venue.id,
+            type: "SINGLES",
+            status: "COMPLETED",
+            scheduledAt: yesterday,
+            winningSide: 1
+        }
+    });
+
+    await prisma.matchPlayer.create({
+        data: {
+            matchId: match2.id,
+            playerId: alicePlayer.id,
+            side: 1
+        }
+    });
+
+    await prisma.matchPlayer.create({
+        data: {
+            matchId: match2.id,
+            playerId: bobPlayer.id,
+            side: 2
+        }
+    });
+
+    await prisma.set.create({
+        data: {
+            matchId: match2.id,
+            setNumber: 1,
+            side1Score: 21,
+            side2Score: 18,
+            isComplete: true,
+            winningSide: 1,
+            completedAt: yesterday
+        }
+    });
+
+    console.log("Demo seed data loaded successfully with matches and venues.");
 }
 
 main()
